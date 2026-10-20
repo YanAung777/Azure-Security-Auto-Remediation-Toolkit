@@ -1,0 +1,78 @@
+{
+  "schemaVersion": "phase1-v1",
+  "notes": "Phase 1 scope only: Storage, KeyVault, AppServices (Function/Web App TLS+HTTPS), Defender plan enablement. Everything else stays at Propose until Phase 2 (Intelligence Layer) exists to route it responsibly.",
+
+  "environmentResolution": {
+    "method": "subscriptionTag",
+    "tagName": "Environment",
+    "criticalityTagName": "Criticality",
+    "validEnvironmentValues": ["NonProd", "Prod"],
+    "validCriticalityValues": ["Low", "High"],
+    "defaultIfUnresolved": "ProdHighRisk",
+    "_comment": "Fail-closed: if a subscription/RG isn't tagged, treat it as the highest-risk bucket, never assume NonProd/Low."
+  },
+
+  "killSwitch": {
+    "enabled": false,
+    "reason": "",
+    "_comment": "When enabled=true (or the -KillSwitchPath file exists), every category is forced to Propose regardless of the matrix below. This is the emergency stop."
+  },
+
+  "categories": {
+    "Storage": {
+      "description": "Storage account TLS, secure transfer (HTTPS-only), public blob access",
+      "scripts": [
+        "Fix-StorageAccountTLS.ps1",
+        "Fix-StorageSecureTransfer.ps1",
+        "Fix-StoragePublicBlobAccess.ps1"
+      ],
+      "rollbackReversible": true,
+      "environments": {
+        "NonProd": "Auto",
+        "ProdLow": "Auto",
+        "ProdHighRisk": "Propose"
+      }
+    },
+    "KeyVault": {
+      "description": "Key Vault soft delete, purge protection, RBAC authorization",
+      "scripts": [
+        "Fix-EnableKeyVaultSoftDelete.ps1",
+        "Fix-EnableKeyVaultPurgeProtection.ps1",
+        "Fix-EnableKeyVaultRBAC.ps1"
+      ],
+      "rollbackReversible": false,
+      "_rollbackNote": "Soft delete and purge protection are irreversible once enabled (Azure platform behavior, not a toolkit limitation). RBAC-auth switch is reversible but re-breaks any access policies still in use.",
+      "environments": {
+        "NonProd": "Auto",
+        "ProdLow": "Auto",
+        "ProdHighRisk": "Auto"
+      }
+    },
+    "AppServices": {
+      "description": "Function App / Web App HTTPS-only and minimum TLS version",
+      "scripts": [
+        "Fix-FunctionAppHTTPSOnly.ps1",
+        "Fix-FunctionAppMinimumTLS.ps1"
+      ],
+      "rollbackReversible": true,
+      "environments": {
+        "NonProd": "Auto",
+        "ProdLow": "Propose",
+        "ProdHighRisk": "Propose"
+      }
+    },
+    "Defender": {
+      "description": "Microsoft Defender plan enablement (Standard tier)",
+      "scripts": [
+        "Fix-EnableDefenderPlans.ps1"
+      ],
+      "rollbackReversible": true,
+      "_scopingWarning": "Fix-EnableDefenderPlans.ps1 iterates ALL subscriptions the identity can see internally (Set-AzContext per subscription) regardless of what scope you invoke it with. Until it accepts a -SubscriptionId parameter, the orchestrator hard-overrides this category to Propose/Escalate only -- see Invoke-Phase1AutoRemediation.ps1 comments. Do not change this in the matrix without fixing the script first.",
+      "environments": {
+        "NonProd": "Auto",
+        "ProdLow": "Propose",
+        "ProdHighRisk": "Escalate"
+      }
+    }
+  }
+}

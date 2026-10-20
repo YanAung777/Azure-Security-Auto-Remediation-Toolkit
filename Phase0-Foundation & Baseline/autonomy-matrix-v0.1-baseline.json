@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "phase0-v0.1",
+  "_note": "This is the ORIGINAL Phase 0 starting point the design doc calls for: every category at Propose, before any autonomy was granted. It exists for audit trail purposes -- to show a reviewer/auditor that autonomy was granted incrementally and deliberately, not that the system started with Auto decisions already baked in. The live matrix your automation actually reads is Phase1-SafeAutoRemediation/autonomy-matrix.json (schemaVersion phase1-v1), which reflects the Phase 1 approval that came after this baseline was reviewed.",
+
+  "approvalHistory": [
+    {
+      "version": "phase0-v0.1",
+      "date": "REPLACE-WITH-ACTUAL-REVIEW-DATE",
+      "approvedBy": ["REPLACE-WITH-SOC-LEAD", "REPLACE-WITH-PLATFORM-SECURITY-LEAD"],
+      "summary": "Initial baseline: every category Propose. No Auto anywhere."
+    },
+    {
+      "version": "phase1-v1",
+      "date": "REPLACE-WITH-ACTUAL-APPROVAL-DATE",
+      "approvedBy": ["REPLACE-WITH-APPROVERS"],
+      "summary": "Storage/KeyVault/AppServices/Defender promoted to Auto per environment, per the Phase 1 build. See Phase1-SafeAutoRemediation/autonomy-matrix.json."
+    }
+  ],
+
+  "categories": {
+    "Storage":      { "environments": { "NonProd": "Propose", "ProdLow": "Propose", "ProdHighRisk": "Propose" } },
+    "KeyVault":     { "environments": { "NonProd": "Propose", "ProdLow": "Propose", "ProdHighRisk": "Propose" } },
+    "AppServices":  { "environments": { "NonProd": "Propose", "ProdLow": "Propose", "ProdHighRisk": "Propose" } },
+    "Defender":     { "environments": { "NonProd": "Propose", "ProdLow": "Propose", "ProdHighRisk": "Propose" } },
+    "Identity":     { "environments": { "NonProd": "Propose", "ProdLow": "Propose", "ProdHighRisk": "Escalate" } },
+    "Network":      { "environments": { "NonProd": "Propose", "ProdLow": "Escalate", "ProdHighRisk": "Escalate" } },
+    "SQL":          { "environments": { "NonProd": "Propose", "ProdLow": "Propose", "ProdHighRisk": "Escalate" } }
+  }
+}

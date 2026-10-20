@@ -1,0 +1,27 @@
+{
+  "Name": "Phase1 Safe Auto-Remediation Operator",
+  "IsCustom": true,
+  "Description": "Least-privilege role for the Phase 1 auto-remediation Managed Identity. Grants only the read/write actions the in-scope Fix-*.ps1 scripts need (Storage, Key Vault, Function/Web App, Defender pricing) plus tag write for evidence tagging and read access to resolve subscription Environment/Criticality tags. Deliberately excludes Contributor, RBAC-assignment actions (Microsoft.Authorization/*), and delete permissions on anything.",
+  "Actions": [
+    "Microsoft.Storage/storageAccounts/read",
+    "Microsoft.Storage/storageAccounts/write",
+    "Microsoft.KeyVault/vaults/read",
+    "Microsoft.KeyVault/vaults/write",
+    "Microsoft.Web/sites/read",
+    "Microsoft.Web/sites/write",
+    "Microsoft.Web/sites/config/read",
+    "Microsoft.Web/sites/config/write",
+    "Microsoft.Security/pricings/read",
+    "Microsoft.Security/pricings/write",
+    "Microsoft.Resources/tags/read",
+    "Microsoft.Resources/tags/write",
+    "Microsoft.Resources/subscriptions/read",
+    "Microsoft.Resources/subscriptions/resourceGroups/read"
+  ],
+  "NotActions": [],
+  "DataActions": [],
+  "NotDataActions": [],
+  "AssignableScopes": [
+    "/providers/Microsoft.Management/managementGroups/REPLACE-WITH-YOUR-MG-ID"
+  ]
+}

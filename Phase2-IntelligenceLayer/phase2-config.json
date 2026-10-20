@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "phase2-v1",
+
+  "clusterWindowDays": 7,
+  "_clusterWindowNote": "A cluster (same FindingType + Subscription + ResourceGroup) seen again inside this window is 'recurring'. Longer than Phase 1's per-resource RecurrenceWindowDays on purpose -- clusters are a coarser signal than individual resource drift.",
+
+  "scoring": {
+    "severityWeights":    { "High": 40, "Medium": 20, "Low": 5, "Unknown": 10 },
+    "environmentWeights": { "ProdHighRisk": 30, "ProdLow": 15, "NonProd": 0 },
+    "recurringClusterBonus": 15,
+    "unknownOwnerPenalty": 10,
+    "attackPathBonus": 50,
+    "escalateScoreThreshold": 70,
+    "_note": "Rule-based and intentionally simple per the design doc's own Phase 2 scope. Not ML. Retune these numbers against your real Phase 0 baseline before trusting the escalateScoreThreshold."
+  },
+
+  "attackPathPolicy": {
+    "_principle": "Attack-path presence only ever moves a decision TOWARD more human attention, never toward more autonomy. Propose->Escalate is allowed. Escalate/Propose->Auto is never allowed on attack-path grounds alone.",
+    "onAutoFindings": "keepAutoButFlagUrgent",
+    "onProposeFindings": "upgradeToEscalate"
+  },
+
+  "unmatchedFindingPolicy": {
+    "_note": "Findings with no corresponding Phase 1 Fix- script can never be executed automatically -- there is nothing to call. They are always surfaced for visibility only.",
+    "highSeverityDecision": "Escalate",
+    "otherSeverityDecision": "Propose"
+  }
+}
