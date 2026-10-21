@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "phase3-v1",
+  "proposalExpiryHours": 72,
+  "approvalValidHours": 24,
+  "_approvalNote": "An approval is a decision about the state of the world when it was made. After approvalValidHours it lapses and the proposal must be re-created, so a stale approval can't be used against a very different estate.",
+  "fourEyes": {
+    "requiredApprovalsEscalate": 2,
+    "requiredApprovalsProdHighRisk": 2,
+    "requiredApprovalsDefault": 1
+  },
+  "rejectionReasonCodes": ["ApplicationDependency", "ChangeFreeze", "FalseFinding", "WrongScope", "WillFixViaIaC", "RiskAccepted", "Other"],
+  "naturalLanguage": {
+    "azureOpenAIApiVersion": "2024-06-01",
+    "_apiVersionNote": "Verify against current Azure OpenAI docs; API versions change.",
+    "allowedModes": ["Preview", "Propose", "Run"]
+  },
+  "promotionCriteria": {
+    "windowDays": 30,
+    "minActions": 20,
+    "minSuccessRate": 0.98,
+    "maxRejections": 0,
+    "maxRecurrences": 0
+  }
+}
